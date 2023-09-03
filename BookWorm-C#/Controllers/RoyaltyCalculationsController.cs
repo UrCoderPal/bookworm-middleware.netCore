@@ -1,100 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BookWorm_C_.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApplication1.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace WebApplication1.Controllers
+namespace BookWorm_C_.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class RoyaltyCalculationsController : ControllerBase
     {
-        private readonly BookWormContext _context;
+        private readonly IRoyaltyCalculationRepository _repository;
 
-        public RoyaltyCalculationsController(BookWormContext context)
+        public RoyaltyCalculationsController(IRoyaltyCalculationRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoyaltyCalculation>>> GetRoyaltyCalculations()
         {
-            var royaltyCalculations = await _context.RoyaltyCalculations.ToListAsync();
+            var royaltyCalculations = await _repository.GetAllAsync();
             return Ok(royaltyCalculations);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<RoyaltyCalculation>> GetRoyaltyCalculation(long id)
         {
-            var royaltyCalculation = await _context.RoyaltyCalculations.FindAsync(id);
-
+            var royaltyCalculation = await _repository.GetByIdAsync(id);
             if (royaltyCalculation == null)
-            {
                 return NotFound();
-            }
 
             return Ok(royaltyCalculation);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutRoyaltyCalculation(long id, RoyaltyCalculation royaltyCalculation)
-        {
-            if (id != royaltyCalculation.RoyaltyCalculationId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(royaltyCalculation).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RoyaltyCalculationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         [HttpPost]
         public async Task<ActionResult<RoyaltyCalculation>> PostRoyaltyCalculation(RoyaltyCalculation royaltyCalculation)
         {
-            _context.RoyaltyCalculations.Add(royaltyCalculation);
-            await _context.SaveChangesAsync();
+            var createdRoyaltyCalculation = await _repository.CreateAsync(royaltyCalculation);
+            return CreatedAtAction(nameof(GetRoyaltyCalculation), new { id = createdRoyaltyCalculation.RoyaltyCalculationId }, createdRoyaltyCalculation);
+        }
 
-            return CreatedAtAction("GetRoyaltyCalculation", new { id = royaltyCalculation.RoyaltyCalculationId }, royaltyCalculation);
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutRoyaltyCalculation(long id, RoyaltyCalculation royaltyCalculation)
+        {
+            var updatedRoyaltyCalculation = await _repository.UpdateAsync(id, royaltyCalculation);
+            if (updatedRoyaltyCalculation == null)
+                return NotFound();
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoyaltyCalculation(long id)
         {
-            var royaltyCalculation = await _context.RoyaltyCalculations.FindAsync(id);
-            if (royaltyCalculation == null)
-            {
+            var result = await _repository.DeleteAsync(id);
+            if (!result)
                 return NotFound();
-            }
-
-            _context.RoyaltyCalculations.Remove(royaltyCalculation);
-            await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool RoyaltyCalculationExists(long id)
-        {
-            return _context.RoyaltyCalculations.Any(e => e.RoyaltyCalculationId == id);
         }
     }
 }
