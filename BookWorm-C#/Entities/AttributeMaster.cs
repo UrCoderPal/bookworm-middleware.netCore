@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 namespace BookWorm_C_.Entities;
 public partial class AttributeMaster
 {
-    
     public long AttributeMasterId { get; set; }
 
     public string? AttributeDesc { get; set; }

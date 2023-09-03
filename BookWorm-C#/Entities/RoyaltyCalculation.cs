@@ -25,7 +25,7 @@ public partial class RoyaltyCalculation
 
     public long? ProductId { get; set; }
 
-    public virtual Beneficiary? Ben { get; set; }
+    public virtual BeneficiaryMaster? Ben { get; set; }
 
     public virtual Product? Product { get; set; }
 

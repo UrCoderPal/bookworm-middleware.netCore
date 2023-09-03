@@ -14,7 +14,7 @@ public partial class ProductBen
 
     public long? ProdBenProductId { get; set; }
 
-    public virtual Beneficiary? ProdBenBen { get; set; }
+    public virtual BeneficiaryMaster? ProdBenBen { get; set; }
 
     public virtual Product? ProdBenProduct { get; set; }
 }

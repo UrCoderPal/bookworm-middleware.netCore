@@ -58,11 +58,11 @@ public partial class Product
 
     public virtual Genre? ProductGenreNavigation { get; set; }
 
-    public virtual Language? ProductLangNavigation { get; set; }
+    public virtual LanguageMaster? ProductLangNavigation { get; set; }
 
     public virtual Publisher? ProductPublisherNavigation { get; set; }
 
     public virtual ICollection<RoyaltyCalculation> RoyaltyCalculations { get; set; } = new List<RoyaltyCalculation>();
 
-    public virtual ProductType? Type { get; set; }
+    public virtual ProductTypeMaster? Type { get; set; }
 }
