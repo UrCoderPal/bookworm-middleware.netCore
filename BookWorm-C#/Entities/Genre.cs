@@ -12,7 +12,7 @@ public partial class Genre
 
     public long? LanguageId { get; set; }
 
-    public virtual Language? Language { get; set; }
+    public virtual LanguageMaster? Language { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }
